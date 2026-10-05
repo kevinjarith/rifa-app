@@ -1,5 +1,6 @@
 {
   "buildCommand": "npm run build",
+  "outputDirectory": "frontend/public",
   "functions": {
     "api/index.js": {
       "includeFiles": "frontend/public/**"
