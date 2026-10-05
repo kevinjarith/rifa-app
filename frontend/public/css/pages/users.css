@@ -1,0 +1,13 @@
+.users-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.users-count {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}

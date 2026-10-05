@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dashboard — Rifa</title>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/pages/dashboard.css" />
+</head>
+<body>
+<div class="layout">
+  <header class="topbar" id="topbar-root"></header>
+  <main>
+    <div id="no-raffle" class="card no-raffle" hidden>
+      <p>No hay una rifa activa todavía.</p>
+      <button class="btn btn-primary" id="create-raffle-btn">Crear rifa (000-999)</button>
+    </div>
+
+    <div id="dashboard-content" hidden>
+      <section class="stats-grid" id="stats-grid" aria-label="Estadísticas de la rifa"></section>
+
+      <div class="legend" aria-hidden="false">
+        <span><span class="badge badge-DISPONIBLE">● Disponible</span></span>
+        <span><span class="badge badge-RESERVADO">⏳ Reservado</span></span>
+        <span><span class="badge badge-PAGADO">✔ Pagado</span></span>
+        <span><span class="badge badge-BLOQUEADO">🔒 Bloqueado</span></span>
+      </div>
+
+      <div class="toolbar">
+        <div class="filter-group" id="filter-group" role="group" aria-label="Filtrar por estado">
+          <button class="filter-btn active" data-filter="TODOS">Todos</button>
+          <button class="filter-btn" data-filter="DISPONIBLE">Disponibles</button>
+          <button class="filter-btn" data-filter="RESERVADO">Reservados</button>
+          <button class="filter-btn" data-filter="PAGADO">Pagados</button>
+          <button class="filter-btn" data-filter="BLOQUEADO">Bloqueados</button>
+        </div>
+        <input
+          type="search"
+          class="search-input"
+          id="search-input"
+          placeholder="Buscar número, nombre o teléfono..."
+          aria-label="Buscar"
+        />
+      </div>
+
+      <section class="ticket-grid" id="ticket-grid" aria-label="Cuadrícula de números de la rifa"></section>
+    </div>
+  </main>
+</div>
+
+<dialog class="modal" id="ticket-modal"></dialog>
+
+<script src="js/api.js"></script>
+<script src="js/utils/format.js"></script>
+<script src="js/utils/confirm.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/ticketModal.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

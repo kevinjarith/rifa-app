@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rifa
+      POSTGRES_PASSWORD: rifa_dev_pw
+      POSTGRES_DB: rifa_app
+    ports:
+      - '5432:5432'
+    volumes:
+      - rifa_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U rifa -d rifa_app']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://rifa:rifa_dev_pw@db:5432/rifa_app
+      SESSION_SECRET: ${SESSION_SECRET:-change-me-generate-a-long-random-string}
+      ALLOW_SEED: 'false'
+      COOKIE_SECURE: 'false'
+    ports:
+      - '3000:3000'
+
+volumes:
+  rifa_db_data:

@@ -1,0 +1,157 @@
+// Prisma schema for the 3-digit raffle administration app.
+// See /Users/kzamorac/.claude/plans/ayudame-a-crear-lo-compiled-mist.md for the full design rationale.
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  VENDEDOR
+}
+
+enum TicketStatus {
+  DISPONIBLE
+  RESERVADO
+  PAGADO
+  BLOQUEADO
+}
+
+enum PaymentStatus {
+  PENDIENTE
+  PAGADO
+  CANCELADO
+  DEVUELTO
+}
+
+enum PaymentMethod {
+  EFECTIVO
+  TRANSFERENCIA
+  NEQUI
+  DAVIPLATA
+  OTRO
+}
+
+enum AuditAction {
+  CREATE_USER
+  DEACTIVATE_USER
+  REACTIVATE_USER
+  CHANGE_ROLE
+  RESET_PASSWORD
+  CREATE_RAFFLE
+  RESERVE
+  PAY
+  RELEASE
+  BLOCK
+  UNBLOCK
+  UNSELL
+  EDIT_TICKET
+  CANCEL_PAYMENT
+  LOGIN
+  LOGIN_FAILED
+  LOGOUT
+}
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  role         Role
+  active       Boolean    @default(true)
+  isDemo       Boolean    @default(false)
+  lastLoginAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  ticketsSold  Ticket[]   @relation("SoldBy")
+  auditLogs    AuditLog[]
+
+  @@map("users")
+}
+
+model Raffle {
+  id          String   @id @default(uuid())
+  name        String
+  isActive    Boolean  @default(true)
+  ticketPrice Decimal  @db.Decimal(10, 2)
+  isDemo      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tickets     Ticket[]
+
+  @@map("raffles")
+}
+
+model Ticket {
+  id           String       @id @default(uuid())
+  raffleId     String
+  raffle       Raffle       @relation(fields: [raffleId], references: [id])
+  number       Int
+  status       TicketStatus @default(DISPONIBLE)
+  customerId   String?
+  customer     Customer?    @relation(fields: [customerId], references: [id])
+  price        Decimal      @db.Decimal(10, 2)
+  soldByUserId String?
+  soldBy       User?        @relation("SoldBy", fields: [soldByUserId], references: [id])
+  observations String?
+  reservedAt   DateTime?
+  paidAt       DateTime?
+  payment      Payment?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@unique([raffleId, number])
+  @@index([raffleId, status])
+  @@map("tickets")
+}
+
+model Customer {
+  id         String   @id @default(uuid())
+  fullName   String
+  phone      String
+  documentId String?
+  isDemo     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  tickets    Ticket[]
+
+  @@map("customers")
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  ticketId  String        @unique
+  ticket    Ticket        @relation(fields: [ticketId], references: [id])
+  amount    Decimal       @db.Decimal(10, 2)
+  method    PaymentMethod
+  status    PaymentStatus @default(PENDIENTE)
+  paidAt    DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("payments")
+}
+
+// Append-only by design: no update/delete route is ever exposed for this model.
+model AuditLog {
+  id             String      @id @default(uuid())
+  userId         String?
+  user           User?       @relation(fields: [userId], references: [id])
+  action         AuditAction
+  ticketNumber   Int?
+  raffleId       String?
+  previousStatus String?
+  newStatus      String?
+  metadata       Json?
+  createdAt      DateTime    @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

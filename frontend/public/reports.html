@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reportes — Rifa</title>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/pages/reports.css" />
+</head>
+<body>
+<div class="layout">
+  <header class="topbar" id="topbar-root"></header>
+  <main>
+    <h2>Reportes</h2>
+    <div class="export-row">
+      <a class="btn btn-primary" id="export-csv-link" href="#">Exportar CSV</a>
+    </div>
+    <div class="reports-grid">
+      <div class="card">
+        <h3>Ventas por día</h3>
+        <div class="table-wrap"><table class="data-table" id="table-by-day"><thead><tr><th>Día</th><th>Cantidad</th><th>Total</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card">
+        <h3>Ventas por vendedor</h3>
+        <div class="table-wrap"><table class="data-table" id="table-by-user"><thead><tr><th>Vendedor</th><th>Cantidad</th><th>Total</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="card">
+        <h3>Ventas por método de pago</h3>
+        <div class="table-wrap"><table class="data-table" id="table-by-method"><thead><tr><th>Método</th><th>Cantidad</th><th>Total</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/api.js"></script>
+<script src="js/utils/format.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/reports.js"></script>
+</body>
+</html>

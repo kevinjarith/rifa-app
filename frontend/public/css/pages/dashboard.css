@@ -1,0 +1,147 @@
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.stat-card {
+  padding: 0.8rem;
+  text-align: center;
+}
+
+.stat-card .value {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.stat-card .label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+.filter-btn.active {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  border-color: var(--color-primary);
+}
+
+.search-input {
+  flex: 1;
+  min-width: 180px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.7rem;
+  font-size: 1rem;
+  min-height: 44px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.ticket-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+  gap: 0.4rem;
+}
+
+.ticket-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 56px;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.ticket-cell .icon {
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.ticket-cell.DISPONIBLE {
+  background: var(--color-disponible-bg);
+  border-color: var(--color-disponible-border);
+  color: var(--color-disponible-text);
+}
+
+.ticket-cell.RESERVADO {
+  background: var(--color-reservado-bg);
+  border-color: var(--color-reservado-border);
+  color: var(--color-reservado-text);
+}
+
+.ticket-cell.PAGADO {
+  background: var(--color-pagado-bg);
+  border-color: var(--color-pagado-border);
+  color: var(--color-pagado-text);
+}
+
+.ticket-cell.BLOQUEADO {
+  background: var(--color-bloqueado-bg);
+  border-color: var(--color-bloqueado-border);
+  color: var(--color-bloqueado-text);
+}
+
+.ticket-cell:focus-visible,
+.ticket-cell:hover {
+  outline: none;
+  box-shadow: var(--shadow-md);
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.modal-detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.92rem;
+}
+
+.modal-detail-row span:first-child {
+  color: var(--color-text-muted);
+}
+
+.no-raffle {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
