@@ -13,6 +13,7 @@
     "prisma:deploy": "prisma migrate deploy",
     "seed": "node prisma/seed.js",
     "seed:clean": "node prisma/removeDemoData.js",
+    "create-admin": "node prisma/createSuperAdmin.js",
     "test": "NODE_ENV=test jest --runInBand"
   },
   "dependencies": {
