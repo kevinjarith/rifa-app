@@ -4,7 +4,7 @@
   "outputDirectory": "frontend/public",
   "functions": {
     "api/index.js": {
-      "includeFiles": "frontend/public/**"
+      "includeFiles": "{frontend/public/**,backend/node_modules/**}"
     }
   },
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
