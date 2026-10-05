@@ -2,8 +2,15 @@
 // See /Users/kzamorac/.claude/plans/ayudame-a-crear-lo-compiled-mist.md for the full design rationale.
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  // Pooled connection (e.g. Supabase's PgBouncer endpoint, port 6543) — used
+  // for normal app queries from serverless functions, where many short-lived
+  // invocations would otherwise each open their own Postgres connection.
+  url       = env("DATABASE_URL")
+  // Direct, unpooled connection (port 5432) — PgBouncer in transaction mode
+  // doesn't support the session-level features Prisma Migrate needs, so
+  // migrations always go through this one instead.
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {

@@ -105,7 +105,8 @@ rifa-app/
 
 | Variable | Descripción |
 |---|---|
-| `DATABASE_URL` | Cadena de conexión a Postgres (producción/desarrollo) |
+| `DATABASE_URL` | Cadena de conexión a Postgres. En local, la base local; en producción, el *connection pooler* de Supabase (puerto 6543) |
+| `DIRECT_URL` | Cadena de conexión directa a Postgres (puerto 5432), solo para `prisma migrate deploy`. En local puede ser igual a `DATABASE_URL` |
 | `TEST_DATABASE_URL` | Cadena de conexión a la base de datos de pruebas |
 | `SESSION_SECRET` | Secreto largo y aleatorio para firmar las cookies de sesión |
 | `ALLOW_SEED` | `true` solo en dev/staging para poder ejecutar `npm run seed` |
@@ -113,7 +114,26 @@ rifa-app/
 
 **Nunca** se commitea `.env` (está en `.gitignore`); solo `.env.example` queda en el repositorio.
 
-## Pendiente (a futuro, cuando se decida)
+## Despliegue gratis: Vercel + Supabase
 
-- Subir el repositorio a GitHub como público para compartirlo.
-- Desplegar en Render/Railway usando `render.yaml` como referencia (requiere crear la cuenta y conectar el repo).
+El repositorio público está en **https://github.com/kevinjarith/rifa-app**. Para tener la app funcionando de verdad en internet, sin pagar:
+
+1. **Supabase** (Postgres gratis): crear cuenta en supabase.com → "New Project" → esperar a que aprovisione. En *Project Settings → Database* copiar dos cadenas de conexión:
+   - **Connection pooling** (modo *Transaction*, puerto `6543`) → esta va en `DATABASE_URL`. Agregar al final `?pgbouncer=true&connection_limit=1`.
+   - **Connection string directa** (puerto `5432`) → esta va en `DIRECT_URL`.
+2. **Vercel** (hosting gratis): crear cuenta en vercel.com → "Add New... → Project" → importar `kevinjarith/rifa-app`. En *Environment Variables* agregar:
+   - `DATABASE_URL`, `DIRECT_URL` (los de Supabase del paso 1)
+   - `SESSION_SECRET` (generar uno: `openssl rand -hex 32`)
+   - `ALLOW_SEED=false`
+   - `COOKIE_SECURE=true`
+   - `NODE_ENV=production`
+3. Desplegar. Vercel corre automáticamente `npm run build` (definido en el `package.json` de la raíz), que instala las dependencias del backend, genera el cliente de Prisma y aplica las migraciones (`prisma migrate deploy`) contra `DIRECT_URL` antes de publicar.
+4. Abrir la URL pública que asigna Vercel (algo como `rifa-app-xxxx.vercel.app`).
+
+**Cómo está armado para esto** (por si se necesita tocar algo más adelante):
+- `api/index.js` es el punto de entrada que usa Vercel — reexporta el mismo `createApp()` de siempre como función serverless, sin tocar la lógica de negocio.
+- `vercel.json` reenvía todas las rutas (API y archivos estáticos del frontend) a esa función.
+- `backend/src/db/prisma.js` reusa el cliente de Prisma entre invocaciones de una misma instancia "caliente" — importante en serverless para no abrir una conexión nueva por cada request.
+- `backend/src/server.js` (con `app.listen(...)`) sigue intacto para seguir usándolo en local o con Docker — Vercel no lo usa.
+
+**Aviso realista:** el plan gratis de Supabase pausa el proyecto si pasa **1 semana sin ninguna consulta** — hay que entrar al panel de Supabase y darle "Resume" manualmente antes de volver a usar la rifa si quedó inactiva mucho tiempo. No se despierta sola con la primera visita.

@@ -9,7 +9,9 @@ module.exports = async function globalSetup() {
   }
   execSync('npx prisma migrate deploy', {
     cwd: path.join(__dirname, '..'),
-    env: { ...process.env, DATABASE_URL: testDbUrl },
+    // Override both: schema.prisma's directUrl (used by the migration engine)
+    // would otherwise still point at the dev database from .env.
+    env: { ...process.env, DATABASE_URL: testDbUrl, DIRECT_URL: testDbUrl },
     stdio: 'inherit',
   });
 };
